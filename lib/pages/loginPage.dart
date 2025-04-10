@@ -91,7 +91,7 @@ class _LoginPageState extends State<LoginPage> {
         onPressed: () {
           String text = "";
           bool loginSukes = false;
-          if (username == "a" && password == "a") {
+          if (username == "" && password == "") {
             text = "Login Berhasil";
             loginSukes = true;
             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
