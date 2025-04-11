@@ -1,0 +1,2 @@
+D:/Flutter_android/tugas_mobile_3/android/app/.cxx/Debug/e3f11h3t/arm64-v8a/CMakeFiles/edit_cache.dir
+D:/Flutter_android/tugas_mobile_3/android/app/.cxx/Debug/e3f11h3t/arm64-v8a/CMakeFiles/rebuild_cache.dir
