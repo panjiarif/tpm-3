@@ -1,6 +1,7 @@
 // MenuPage
 import 'package:flutter/material.dart';
 import 'package:tpm_tugas3/pages/subPages/konversiWaktu.dart';
+import 'package:tpm_tugas3/pages/subPages/rekomendasiWeb.dart';
 
 class MenuPage extends StatefulWidget {
   MenuPage({super.key});
@@ -17,6 +18,11 @@ class _MenuPageState extends State<MenuPage> {
     switch (paging) {
       case "konversiWaktu":
         return Konversiwaktu(onBack: () => { 
+          setState(() {
+          paging = "";
+        })});
+      case "rekomendasiWeb": 
+        return RekomendasiWeb(onBack: () => {
           setState(() {
           paging = "";
         })});
@@ -85,7 +91,9 @@ class _MenuPageState extends State<MenuPage> {
                 subtitle: Text('Aplikasi rekomendasi situs web'),
                 trailing: Icon(Icons.arrow_forward),
                 onTap: () {
-                  print('Web Recommendation tapped');
+                  setState(() {
+                    paging = 'rekomendasiWeb';
+                  });
                 },
               ),
             ),
