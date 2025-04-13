@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:tpm_tugas3/pages/subPages/konversiWaktu.dart';
 import 'package:tpm_tugas3/pages/subPages/stopWatch.dart';
+import 'package:tpm_tugas3/pages/subPages/locationPage.dart';
 // import 'package:tpm_tugas3/pages/subPages/rekomendasiWeb.dart';
 
 class MenuPage extends StatefulWidget {
@@ -27,6 +28,11 @@ class _MenuPageState extends State<MenuPage> {
           setState(() {
           paging = "";
         })});
+      case "locationPage":
+        return LocationApp(onBack: () => {
+          setState(() {
+            paging = "";
+          })});
       case "":
       default:
         return Padding(
@@ -70,7 +76,9 @@ class _MenuPageState extends State<MenuPage> {
                 subtitle: Text('Aplikasi tracking lokasi'),
                 trailing: Icon(Icons.arrow_forward),
                 onTap: () {
-                  print('LBS Tracking tapped');
+                  setState(() {
+                    paging = 'locationPage';
+                  });
                 },
               ),
             ),
