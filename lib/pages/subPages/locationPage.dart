@@ -100,52 +100,6 @@ class _LocationAppState extends State<LocationApp> {
     }
   }
 
-  void _startTracking() {
-    if (!_isTracking) {
-      setState(() {
-        _isTracking = true;
-        if (_currentPosition != null) {
-          _locationHistory.add(_currentPosition!);
-        }
-      });
-
-      _locationTimer = Timer.periodic(const Duration(seconds: 5), (timer) async {
-        try {
-          Position position = await Geolocator.getCurrentPosition(
-            desiredAccuracy: LocationAccuracy.high,
-          ).timeout(Duration(seconds: 5));
-          setState(() {
-            _currentPosition = position;
-            _locationHistory.add(position);
-            if (_locationHistory.length > 50) {
-              _locationHistory.removeAt(0);
-            }
-            _updateMarker(position);
-            _centerMap(position);
-          });
-          _getAddressFromLatLng(position);
-        } catch (e) {
-          print("Error updating location: $e");
-        }
-      });
-    }
-  }
-
-  void _stopTracking() {
-    if (_isTracking) {
-      _locationTimer?.cancel();
-      setState(() {
-        _isTracking = false;
-      });
-    }
-  }
-
-  void _clearTracking() {
-    _stopTracking();
-    setState(() {
-      _locationHistory.clear();
-    });
-  }
 
   void _updateMarker(Position position) {
     _markers = [
@@ -218,7 +172,7 @@ class _LocationAppState extends State<LocationApp> {
 
   String _formatAccuracy(Position? position) {
     if (position == null) return "";
-    return 'Accuracy: ${position.accuracy.toStringAsFixed(1)} meters';
+    return 'Akurasi: ${position.accuracy.toStringAsFixed(1)} meter';
   }
 
   @override
@@ -259,7 +213,7 @@ class _LocationAppState extends State<LocationApp> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        'My Location',
+                        'Lokasi Saya',
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
@@ -321,7 +275,7 @@ class _LocationAppState extends State<LocationApp> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Current Address:',
+                              'Lokasi Sekarang:',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.blue[800],
@@ -338,7 +292,7 @@ class _LocationAppState extends State<LocationApp> {
                             ),
                             const SizedBox(height: 10),
                             Text(
-                              'Coordinates:',
+                              'Koordinat:',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.blue[800],
@@ -370,101 +324,20 @@ class _LocationAppState extends State<LocationApp> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           _buildControlButton(
-                            _isTracking ? 'Stop' : 'Track',
-                            _isTracking ? Icons.stop : Icons.play_arrow,
-                            _isTracking ? _stopTracking : _startTracking,
-                            _isTracking ? Colors.orange : Colors.green,
-                          ),
-                          _buildControlButton(
                             'Refresh',
                             Icons.my_location,
                             _getCurrentLocation,
                             Colors.blue,
                           ),
-                          _buildControlButton(
-                            'Clear',
-                            Icons.delete,
-                            _clearTracking,
-                            Colors.red,
-                            disabled: _locationHistory.isEmpty,
-                          ),
                         ],
                       ),
-                      const SizedBox(height: 25),
-                      if (_locationHistory.isNotEmpty) ...[
-                        Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                'Location History',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.blue[700],
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              SizedBox(
-                                height: _locationHistory.length > 4 ? 200 : (_locationHistory.length * 50.0),
-                                child: ListView.builder(
-                                  shrinkWrap: true,
-                                  physics: const ClampingScrollPhysics(),
-                                  itemCount: _locationHistory.length,
-                                  itemBuilder: (context, index) {
-                                    final reverseIndex = _locationHistory.length - 1 - index;
-                                    final position = _locationHistory[reverseIndex];
-                                    return Container(
-                                      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-                                      margin: const EdgeInsets.only(bottom: 5),
-                                      decoration: BoxDecoration(
-                                        color: index % 2 == 0 ? Colors.blue[50] : Colors.white,
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            'Point ${index + 1}',
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.w500,
-                                              color: Colors.blue[800],
-                                            ),
-                                          ),
-                                          Text(
-                                            '${position.latitude.toStringAsFixed(4)}, ${position.longitude.toStringAsFixed(4)}',
-                                            style: TextStyle(
-                                              fontFamily: 'monospace',
-                                              fontWeight: FontWeight.w500,
-                                              color: Colors.blue[800],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+                      const SizedBox(height: 25)
                     ],
                   ),
                 ),
               ),
             ),
           ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: _currentPosition == null ? null : () => _centerMap(_currentPosition!),
-          backgroundColor: Colors.blue,
-          child: const Icon(Icons.center_focus_strong, color: Colors.white),
         ),
       ),
     );
