@@ -2,6 +2,13 @@
 
 A new Flutter project.
 
+## Anggota Kelompok
+
+1. Ahmad Zakaria        | 123220077
+2. Andrea Alfian S.P    | 123220078
+3. Panji Arif Jafarudin | 123220091
+4. Muhammad Islakha     | 123210096
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
