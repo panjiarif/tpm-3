@@ -1,4 +1,5 @@
 // HelpPage
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tpm_tugas3/pages/loginPage.dart';
 
@@ -156,13 +157,11 @@ class HelpPage extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: () {
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginPage()),
-                  (Route<dynamic> route) => false,
-                );
-                print('Logout button pressed');
+              onPressed: () async {
+                await FirebaseAuth.instance.signOut();
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+                  return LoginPage();
+                }));
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.cyan,
