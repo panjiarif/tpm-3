@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "106724427095",
+    "project_id": "tpm-3-5ee1b",
+    "storage_bucket": "tpm-3-5ee1b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:106724427095:android:8888ce3178a6f864382a12",
+        "android_client_info": {
+          "package_name": "com.example.tpm_tugas3"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJhXXv0CrPes8idolkaSQxqaIxBtSPpUc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
