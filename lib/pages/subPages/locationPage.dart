@@ -18,9 +18,9 @@ class LocationApp extends StatefulWidget {
 }
 
 class _LocationAppState extends State<LocationApp> {
-  final MapController _mapController = MapController();
+  MapController? _mapController; // Changed to nullable
   Position? _currentPosition;
-  String _currentAddress = "Finding location...";
+  String _currentAddress = "Mencari Lokasi...";
   bool _isLoading = true;
   bool _isTracking = false;
   Timer? _locationTimer;
@@ -30,12 +30,15 @@ class _LocationAppState extends State<LocationApp> {
   @override
   void initState() {
     super.initState();
+    // Initialize the controller here
+    _mapController = MapController();
     _getCurrentLocation();
   }
 
   @override
   void dispose() {
     _locationTimer?.cancel();
+    _mapController = null; // Clear the controller in dispose
     super.dispose();
   }
 
@@ -49,10 +52,10 @@ class _LocationAppState extends State<LocationApp> {
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
         setState(() {
-          _currentAddress = "Location services are disabled";
+          _currentAddress = "Layanan lokasi mati";
           _isLoading = false;
         });
-        print("Location services disabled");
+        print("Layanan Lokasi tidak di aktifkan");
         return;
       }
 
@@ -62,7 +65,7 @@ class _LocationAppState extends State<LocationApp> {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
           setState(() {
-            _currentAddress = "Location permission denied";
+            _currentAddress = "Izin Lokasi Ditolak";
             _isLoading = false;
           });
           return;
@@ -71,7 +74,7 @@ class _LocationAppState extends State<LocationApp> {
 
       if (permission == LocationPermission.deniedForever) {
         setState(() {
-          _currentAddress = "Location permissions permanently denied";
+          _currentAddress = "Izin Lokasi Ditolak Permanen";
           _isLoading = false;
         });
         return;
@@ -79,8 +82,8 @@ class _LocationAppState extends State<LocationApp> {
 
       Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
-      ).timeout(Duration(seconds: 10), onTimeout: () {
-        throw Exception("Location fetch timed out");
+      ).timeout(const Duration(seconds: 10), onTimeout: () {
+        throw Exception("RTO");
       });
 
       setState(() {
@@ -89,58 +92,72 @@ class _LocationAppState extends State<LocationApp> {
         _isLoading = false;
       });
 
-      _centerMap(position);
+      // Use post-frame callback to ensure widget is built
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _centerMap(position);
+        }
+      });
+
       _getAddressFromLatLng(position);
     } catch (e) {
       print("Error in _getCurrentLocation: $e");
       setState(() {
-        _currentAddress = "Error fetching location: $e";
+        _currentAddress = "Gagal Mendapatkan Lokasi: $e";
         _isLoading = false;
       });
     }
   }
 
-
   void _updateMarker(Position position) {
-    _markers = [
-      Marker(
-        width: 80.0,
-        height: 80.0,
-        point: LatLng(position.latitude, position.longitude),
-        child: Column(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    blurRadius: 6,
-                    color: Colors.black.withOpacity(0.3),
-                    offset: const Offset(0, 3),
-                  )
-                ],
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: Icon(
-                  Icons.location_on,
-                  color: Colors.blue[700],
-                  size: 30,
+    setState(() {
+      _markers = [
+        Marker(
+          width: 80.0,
+          height: 80.0,
+          point: LatLng(position.latitude, position.longitude),
+          child: Column(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      blurRadius: 6,
+                      color: Colors.black.withOpacity(0.3),
+                      offset: const Offset(0, 3),
+                    )
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: Icon(
+                    Icons.location_on,
+                    color: Colors.blue[700],
+                    size: 30,
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    ];
+      ];
+    });
   }
 
   void _centerMap(Position position) {
-    _mapController.move(
-      LatLng(position.latitude, position.longitude),
-      15.0,
-    );
+    // Add null check for map controller
+    if (_mapController != null && mounted) {
+      try {
+        _mapController!.move(
+          LatLng(position.latitude, position.longitude),
+          15.0,
+        );
+      } catch (e) {
+        print("Error centering map: $e");
+      }
+    }
   }
 
   Future<void> _getAddressFromLatLng(Position position) async {
@@ -150,7 +167,7 @@ class _LocationAppState extends State<LocationApp> {
         position.longitude,
       );
 
-      if (placemarks.isNotEmpty) {
+      if (placemarks.isNotEmpty && mounted) {
         Placemark place = placemarks[0];
         setState(() {
           _currentAddress = '${place.street ?? ''}, ${place.subLocality ?? ''}, '
@@ -158,14 +175,16 @@ class _LocationAppState extends State<LocationApp> {
         });
       }
     } catch (e) {
-      setState(() {
-        _currentAddress = "Unable to fetch address";
-      });
+      if (mounted) {
+        setState(() {
+          _currentAddress = "Unable to fetch address";
+        });
+      }
     }
   }
 
   String _formatCoordinates(Position? position) {
-    if (position == null) return "Waiting for location...";
+    if (position == null) return "Menuggu Lokasi...";
     return 'Lat: ${position.latitude.toStringAsFixed(6)}, '
         'Long: ${position.longitude.toStringAsFixed(6)}';
   }
@@ -235,7 +254,7 @@ class _LocationAppState extends State<LocationApp> {
                         ),
                         clipBehavior: Clip.antiAlias,
                         child: _isLoading || _currentPosition == null
-                            ? Center(child: CircularProgressIndicator())
+                            ? const Center(child: CircularProgressIndicator())
                             : FlutterMap(
                           mapController: _mapController,
                           options: MapOptions(
@@ -285,7 +304,7 @@ class _LocationAppState extends State<LocationApp> {
                             const SizedBox(height: 5),
                             Text(
                               _currentAddress,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Colors.black87,
                                 fontSize: 14,
                               ),
@@ -302,7 +321,7 @@ class _LocationAppState extends State<LocationApp> {
                             const SizedBox(height: 5),
                             Text(
                               _formatCoordinates(_currentPosition),
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontFamily: 'monospace',
                                 color: Colors.black87,
                                 fontSize: 14,
@@ -311,7 +330,7 @@ class _LocationAppState extends State<LocationApp> {
                             const SizedBox(height: 5),
                             Text(
                               _formatAccuracy(_currentPosition),
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Colors.black54,
                                 fontSize: 13,
                               ),
