@@ -1,7 +1,9 @@
 // MenuPage
 import 'package:flutter/material.dart';
 import 'package:tpm_tugas3/pages/subPages/konversiWaktu.dart';
-import 'package:tpm_tugas3/pages/subPages/rekomendasiWeb.dart';
+import 'package:tpm_tugas3/pages/subPages/stopWatch.dart';
+import 'package:tpm_tugas3/pages/subPages/locationPage.dart';
+// import 'package:tpm_tugas3/pages/subPages/rekomendasiWeb.dart';
 
 class MenuPage extends StatefulWidget {
   MenuPage({super.key});
@@ -21,11 +23,16 @@ class _MenuPageState extends State<MenuPage> {
           setState(() {
           paging = "";
         })});
-      case "rekomendasiWeb": 
-        return RekomendasiWeb(onBack: () => {
+      case "stopWatch":
+        return StopwatchApp(onBack: () => {
           setState(() {
           paging = "";
         })});
+      case "locationPage":
+        return LocationApp(onBack: () => {
+          setState(() {
+            paging = "";
+          })});
       case "":
       default:
         return Padding(
@@ -45,7 +52,9 @@ class _MenuPageState extends State<MenuPage> {
                 subtitle: Text('Aplikasi stopwatch, mencatat waktu'),
                 trailing: Icon(Icons.arrow_forward),
                 onTap: () {
-                  print('Stopwatch tapped');
+                  setState(() {
+                    paging = 'stopWatch';
+                  });
                 },
               ),
             ),
@@ -67,7 +76,9 @@ class _MenuPageState extends State<MenuPage> {
                 subtitle: Text('Aplikasi tracking lokasi'),
                 trailing: Icon(Icons.arrow_forward),
                 onTap: () {
-                  print('LBS Tracking tapped');
+                  setState(() {
+                    paging = 'locationPage';
+                  });
                 },
               ),
             ),
