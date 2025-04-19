@@ -154,6 +154,8 @@ class HelpPage extends StatelessWidget {
             ),
           ),
           SizedBox(height: 20),
+          Text('Login sebagai ${FirebaseAuth.instance.currentUser?.email}'),
+          SizedBox(height: 20),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
