@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tpm_tugas3/pages/homePage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_session_jwt/flutter_session_jwt.dart';
+import 'package:tpm_tugas3/services/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -9,8 +12,9 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  String username = "";
-  String password = "";
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  String? error;
   bool visible = true;
 
   @override
@@ -31,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
         SizedBox(height: 10),
         _usernameField(),
         _passwordField(),
-        _loginButton(),
+        _loginButton(context),
       ],
     ));
   }
@@ -41,11 +45,9 @@ class _LoginPageState extends State<LoginPage> {
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: TextFormField(
         enabled: true,
-        onChanged: (value) {
-          username = value;
-        },
+        controller: _emailController,
         decoration: InputDecoration(
-          hintText: 'Username',
+          hintText: 'Email',
           contentPadding: const EdgeInsets.all(8.0),
           border: OutlineInputBorder(
               borderRadius: const BorderRadius.all(Radius.circular(8.0)),
@@ -60,9 +62,7 @@ class _LoginPageState extends State<LoginPage> {
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: TextFormField(
         enabled: true,
-        onChanged: (value) {
-          password = value;
-        },
+        controller: _passwordController,
         obscureText: visible,
         decoration: InputDecoration(
           hintText: 'Password',
@@ -83,30 +83,23 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _loginButton() {
+  Widget _loginButton(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       width: MediaQuery.of(context).size.width,
       child: ElevatedButton(
-        onPressed: () {
-          String text = "";
-          bool loginSukes = false;
-          if (username == "" && password == "") {
-            text = "Login Berhasil";
-            loginSukes = true;
+        onPressed: () async {
+          await AuthService().signin(
+            email: _emailController.text,
+            password: _passwordController.text,
+            context: context
+          );
+
+          if (FirebaseAuth.instance.currentUser != null) {
             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
               return homePage();
             }));
-          } else {
-            text = "Username atau Password Salah";
-            loginSukes = false;
           }
-          SnackBar snackBar = SnackBar(
-            content: Text(text),
-            backgroundColor: loginSukes ? Colors.green : Colors.red,
-            duration: Duration(seconds: 2),
-          );
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
         },
         child: Text("Login"),
       ),

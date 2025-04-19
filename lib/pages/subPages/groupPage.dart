@@ -24,7 +24,7 @@ class GroupPage extends StatelessWidget {
     {
       'nama': 'Muhammad Islakha',
       'nim': '123210096',
-      'gambar': 'assets/andre.jpg',
+      'gambar': 'assets/lakha.jpg',
     },
   ];
 
