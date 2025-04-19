@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:firebase_core/firebase_core.dart';
-// import 'package:tpm_tugas3/main.dart';
 import 'package:tpm_tugas3/pages/homePage.dart';
 
 class AuthService {
@@ -10,34 +8,40 @@ class AuthService {
     required String password,
     required BuildContext context
   }) async {
-    // try {
-    //   await FirebaseAuth.instance.signInWithEmailAndPassword(
-    //       email: email,
-    //       password: password
-    //   );
-    //
-    //   await Future.delayed(const Duration(seconds: 1));
-    //   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-    //     return homePage();
-    //   }));
-    // } on FirebaseAuthException catch (e) {
-    //   print(e);
-    // }
     try {
       final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: email,
           password: password
       );
     } on FirebaseAuthException catch (e) {
+      String errorMessage = '';
       if (e.code == 'invalid-credential') {
-        print('No user found for that email.');
-      } else if (e.code == '') {
-        print('Wrong password provided for that user.');
-      } else {
-        print(e.code);
+        errorMessage = 'Email atau password salah!';
+      } else if (e.code == 'invalid-email') {
+        errorMessage = 'Email tidak valid!';
+      } else if (e.code == 'channel-error') {
+        errorMessage = 'Email dan password tidak boleh kosong!';
+      } else if (e.code == 'wrong-password') {
+        errorMessage = 'Password salah!';
+      }else {
+        errorMessage = e.code;
       }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(errorMessage),
+          backgroundColor: Colors.red,
+        ),
+      );
     } catch (e) {
-      print(FirebaseAuth.instance.currentUser);
+      String errorMessage = '';
+      FirebaseAuth.instance.currentUser != null ? errorMessage = 'Login sebagai $FirebaseAuth.instance.currentUser' : '';
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(errorMessage),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 }
