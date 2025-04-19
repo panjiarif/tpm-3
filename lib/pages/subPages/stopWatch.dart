@@ -237,7 +237,7 @@ class _StopwatchAppState extends State<StopwatchApp> {
                                             ),
                                           ),
                                           Text(
-                                            laps[reverseIndex],
+                                            laps[index],
                                             style: TextStyle(
                                               fontFamily: 'monospace',
                                               fontWeight: FontWeight.w500,
