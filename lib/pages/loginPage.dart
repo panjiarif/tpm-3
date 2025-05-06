@@ -24,14 +24,8 @@ class _LoginPageState extends State<LoginPage> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Center(
-          child: Text(
-            'Selamat Datang',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
+          child: Text('Selamat Datang',
+            style: TextStyle(fontSize: 24,fontWeight: FontWeight.bold,),),),
         SizedBox(height: 10),
         _usernameField(),
         _passwordField(),
@@ -94,7 +88,6 @@ class _LoginPageState extends State<LoginPage> {
             password: _passwordController.text,
             context: context
           );
-
           if (FirebaseAuth.instance.currentUser != null) {
             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
               return homePage();
