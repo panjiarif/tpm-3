@@ -1,6 +1,7 @@
 // MenuPage
 import 'package:flutter/material.dart';
 import 'package:tpm_tugas3/pages/subPages/konversiWaktu.dart';
+import 'package:tpm_tugas3/pages/subPages/rekomendasiWeb.dart';
 import 'package:tpm_tugas3/pages/subPages/stopWatch.dart';
 import 'package:tpm_tugas3/pages/subPages/locationPage.dart';
 // import 'package:tpm_tugas3/pages/subPages/rekomendasiWeb.dart';
@@ -30,6 +31,11 @@ class _MenuPageState extends State<MenuPage> {
         })});
       case "locationPage":
         return LocationApp(onBack: () => {
+          setState(() {
+            paging = "";
+          })});
+      case "rekomendasiWeb":
+        return RekomendasiWeb(onBack: () => {
           setState(() {
             paging = "";
           })});
