@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 
 class NumberChecker extends StatefulWidget {
-  const NumberChecker({super.key});
+  final VoidCallback onBack;
+
+  const NumberChecker({
+    super.key,
+    required this.onBack,
+  });
 
   @override
   State<NumberChecker> createState() => _NumberCheckerState();

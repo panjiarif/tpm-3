@@ -14,12 +14,10 @@ class StopwatchApp extends StatefulWidget {
 }
 
 class _StopwatchAppState extends State<StopwatchApp> {
-  // Using the built-in Stopwatch class from dart:core
   final _stopwatch = Stopwatch();
   Timer? _timer;
   List<String> laps = [];
 
-  // For display
   String _formattedTime = '00:00:00.00';
 
   @override
@@ -114,7 +112,6 @@ class _StopwatchAppState extends State<StopwatchApp> {
                 minHeight: MediaQuery.of(context).size.height * (75 / 100),
               ),
               child: Center(
-                // Menghapus IntrinsicHeight dan menggantinya dengan Column biasa
                 child: Container(
                   margin: const EdgeInsets.all(16),
                   padding: const EdgeInsets.all(20),
@@ -142,7 +139,8 @@ class _StopwatchAppState extends State<StopwatchApp> {
                       ),
                       const SizedBox(height: 30),
                       Container(
-                        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 20, horizontal: 25),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(20),
@@ -170,7 +168,9 @@ class _StopwatchAppState extends State<StopwatchApp> {
                         children: [
                           _buildControlButton(
                             _stopwatch.isRunning ? 'Pause' : 'Start',
-                            _stopwatch.isRunning ? Icons.pause : Icons.play_arrow,
+                            _stopwatch.isRunning
+                                ? Icons.pause
+                                : Icons.play_arrow,
                             _stopwatch.isRunning ? _stopTimer : _startTimer,
                             _stopwatch.isRunning ? Colors.orange : Colors.green,
                           ),
@@ -198,7 +198,7 @@ class _StopwatchAppState extends State<StopwatchApp> {
                             borderRadius: BorderRadius.circular(15),
                           ),
                           child: Column(
-                            mainAxisSize: MainAxisSize.min, // Penting: membuat column tidak mencoba mengambil semua ruang
+                            mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
                                 'Laps',
@@ -209,25 +209,30 @@ class _StopwatchAppState extends State<StopwatchApp> {
                                 ),
                               ),
                               const SizedBox(height: 10),
-                              // Gunakan Column + ListView.builder dgn tinggi tetap untuk laps
                               SizedBox(
-                                height: laps.length > 4 ? 200 : (laps.length * 50.0), // Tinggi dinamis berdasarkan jumlah lap
+                                height: laps.length > 4
+                                    ? 200
+                                    : (laps.length * 50.0),
                                 child: ListView.builder(
                                   shrinkWrap: true,
                                   physics: const ClampingScrollPhysics(),
                                   itemCount: laps.length,
                                   itemBuilder: (context, index) {
-                                    // Menampilkan lap terbaru di atas
-                                    final reverseIndex = laps.length - 1 - index;
+                                    final reverseIndex =
+                                        laps.length - 1 - index;
                                     return Container(
-                                      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 8, horizontal: 10),
                                       margin: const EdgeInsets.only(bottom: 5),
                                       decoration: BoxDecoration(
-                                        color: index % 2 == 0 ? Colors.blue[50] : Colors.white,
+                                        color: index % 2 == 0
+                                            ? Colors.blue[50]
+                                            : Colors.white,
                                         borderRadius: BorderRadius.circular(8),
                                       ),
                                       child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
                                             'Lap ${index + 1}',
@@ -265,7 +270,9 @@ class _StopwatchAppState extends State<StopwatchApp> {
     );
   }
 
-  Widget _buildControlButton(String label, IconData icon, VoidCallback onPressed, Color color, {bool disabled = false}) {
+  Widget _buildControlButton(
+      String label, IconData icon, VoidCallback onPressed, Color color,
+      {bool disabled = false}) {
     return Column(
       children: [
         ElevatedButton(

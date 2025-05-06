@@ -4,6 +4,7 @@ import 'package:tpm_tugas3/pages/subPages/konversiWaktu.dart';
 import 'package:tpm_tugas3/pages/subPages/rekomendasiWeb.dart';
 import 'package:tpm_tugas3/pages/subPages/stopWatch.dart';
 import 'package:tpm_tugas3/pages/subPages/locationPage.dart';
+import 'package:tpm_tugas3/pages/subPages/numberChecker.dart';
 // import 'package:tpm_tugas3/pages/subPages/rekomendasiWeb.dart';
 
 class MenuPage extends StatefulWidget {
@@ -39,6 +40,11 @@ class _MenuPageState extends State<MenuPage> {
           setState(() {
             paging = "";
           })});
+      case "numberType":
+        return NumberChecker(onBack: () => {
+          setState(() {
+            paging = "";
+          })});
       case "":
       default:
         return Padding(
@@ -71,7 +77,9 @@ class _MenuPageState extends State<MenuPage> {
                 subtitle: Text('Aplikasi menampilkan jenis bilangan'),
                 trailing: Icon(Icons.arrow_forward),
                 onTap: () {
-                  print('Number Type tapped');
+                  setState(() {
+                    paging = 'numberType';
+                  });
                 },
               ),
             ),
